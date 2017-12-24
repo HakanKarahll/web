@@ -1,6 +1,7 @@
 class PostsController < ApplicationController
   before_action :set_post, only: [:show, :edit, :update, :destroy, :like, :unlike]
-  before_action :authenticate_user!, except: [:index, :show]
+  before_action :authenticate_user!, except: [:index, :show, :update, :destroy]
+  before_action :kontrol, only: [:edit, :destroy, :update]
   # GET /posts
   # GET /posts.json
   def index
@@ -44,7 +45,10 @@ class PostsController < ApplicationController
       end
     end
   end
-
+  
+  def kontrol
+    redirect_to root_path, notice: "Yetki" unless current_user==@post.user
+  end
   # PATCH/PUT /posts/1
   # PATCH/PUT /posts/1.json
   def update
@@ -88,7 +92,7 @@ class PostsController < ApplicationController
       format.json
     end
   end
-
+  
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_post
@@ -100,3 +104,4 @@ class PostsController < ApplicationController
       params.require(:post).permit(:title, :msg, :image)
     end
 end
+
